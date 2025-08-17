@@ -120,6 +120,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
     while (HAL_ADC_PollForConversion(&hadc1, 100) != HAL_OK) {}
     adc_val = HAL_ADC_GetValue(&hadc1);
+    analogToLEDs(adc_val);
     // adc_val_avg_8 = average_8(adc_val);
     // adc_val_avg_16 = average_16(adc_val);
 
@@ -238,7 +239,15 @@ uint32_t average_16(uint32_t x){
 }
 
 void analogToLEDs(uint32_t analog){
-  
+  uint32_t step = 4096/5;
+  int level = analog/step;
+  int i = 0;
+  while (i < 4){
+    struct LED led = LED_ARR[i];
+    int state = (i < level) ? GPIO_PIN_SET : GPIO_PIN_RESET;
+    HAL_GPIO_WritePin(led.port, led.pin, state);
+    i++;
+  }
 }
 /* USER CODE END 4 */
 
