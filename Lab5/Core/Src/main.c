@@ -102,15 +102,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  volatile uint32_t adc_val = 0;
-  HAL_ADC_Start(&hadc1);
+  uint32_t adc_val = 0;
+  HAL_ADC_Start_DMA(&hadc1, &adc_val, 1);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    while (HAL_ADC_PollForConversion(&hadc1, 100) != HAL_OK) {}
-    adc_val = HAL_ADC_GetValue(&hadc1);
+    // while (HAL_ADC_PollForConversion(&hadc1, 100) != HAL_OK) {}
     transmitUARTStr("ADC1_CH10 ");
 
     displayHEX(adc_val);
