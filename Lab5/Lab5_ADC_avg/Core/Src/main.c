@@ -55,6 +55,8 @@ void SystemClock_Config(void);
 void transmitUARTStr(char* str);
 void transmitUARTChar(char c);
 void displayHEX(uint32_t dec);
+int average_8(int x);
+int average_16(int x);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -195,6 +197,32 @@ void displayHEX(uint32_t dec){
   char buf[13];
   sprintf(buf, "0x%08x", (unsigned int)dec);
   transmitUARTStr(buf);
+}
+
+int average_8(int x){
+  static int samples[8];
+  static int i = 0;
+  static int total = 0;
+
+  total += x - samples[i];
+  samples[i] = x;
+
+  i = ((i == 7) ? 0 : i+1);
+  
+  return total >> 3;
+}
+
+int average_16(int x){
+  static int samples[16];
+  static int i = 0;
+  static int total = 0;
+
+  total += x - samples[i];
+  samples[i] = x;
+
+  i = ((i == 15) ? 0 : i+1);
+  
+  return total >> 4;
 }
 /* USER CODE END 4 */
 
