@@ -24,7 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,7 +52,9 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void transmitUARTStr(char* str);
+void transmitUARTChar(char c);
+void displayHEX(uint32_t dec);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -91,16 +94,34 @@ int main(void)
   MX_ADC1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  volatile uint32_t adc_val = 0;
+  HAL_ADC_Start(&hadc1);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    while (HAL_ADC_PollForConversion(&hadc1, 100) != HAL_OK) {}
+    adc_val = HAL_ADC_GetValue(&hadc1);
+    transmitUARTStr("ADC1_CH10 ");
+
+    displayHEX(adc_val);
+
+    char buf[20];
+    float v_in = adc_val/4095.0 * 3.3;
+    int int_part = (int)v_in;
+    int dec_part = (int)((v_in - int_part) * 100);
+    sprintf(buf, "%d.%02d", int_part, dec_part);
+    transmitUARTStr(" Vin = ");
+    transmitUARTStr(buf);
+    transmitUARTStr("\r\n");
+    HAL_Delay(400);
   }
   /* USER CODE END 3 */
 }
@@ -160,7 +181,21 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void transmitUARTStr(char* str){
+  while (__HAL_UART_GET_FLAG(&huart3, UART_FLAG_TC)==RESET){}
+  HAL_UART_Transmit(&huart3, (uint8_t*)str, strlen(str), 1000);
+}
 
+void transmitUARTChar(char c){
+  while (__HAL_UART_GET_FLAG(&huart3, UART_FLAG_TC)==RESET){}
+  HAL_UART_Transmit(&huart3, (uint8_t*)&c, 1, 1000);
+}
+
+void displayHEX(uint32_t dec){
+  char buf[13];
+  sprintf(buf, "0x%08x", (unsigned int)dec);
+  transmitUARTStr(buf);
+}
 /* USER CODE END 4 */
 
 /**
