@@ -46,7 +46,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+volatile uint32_t adc_val = 0;
+volatile uint32_t adc_val_avg_8 = 0;
+volatile uint32_t adc_val_avg_16 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,8 +57,8 @@ void SystemClock_Config(void);
 void transmitUARTStr(char* str);
 void transmitUARTChar(char c);
 void displayHEX(uint32_t dec);
-int average_8(int x);
-int average_16(int x);
+uint32_t average_8(uint32_t x);
+uint32_t average_16(uint32_t x);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -102,7 +104,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  volatile uint32_t adc_val = 0;
   HAL_ADC_Start(&hadc1);
   while (1)
   {
@@ -111,6 +112,9 @@ int main(void)
     /* USER CODE BEGIN 3 */
     while (HAL_ADC_PollForConversion(&hadc1, 100) != HAL_OK) {}
     adc_val = HAL_ADC_GetValue(&hadc1);
+    adc_val_avg_8 = average_8(adc_val);
+    adc_val_avg_16 = average_16(adc_val);
+
     transmitUARTStr("ADC1_CH10 ");
 
     displayHEX(adc_val);
@@ -199,10 +203,10 @@ void displayHEX(uint32_t dec){
   transmitUARTStr(buf);
 }
 
-int average_8(int x){
-  static int samples[8];
+uint32_t average_8(uint32_t x){
+  static uint32_t samples[8];
   static int i = 0;
-  static int total = 0;
+  static uint32_t total = 0;
 
   total += x - samples[i];
   samples[i] = x;
@@ -212,10 +216,10 @@ int average_8(int x){
   return total >> 3;
 }
 
-int average_16(int x){
-  static int samples[16];
+uint32_t average_16(uint32_t x){
+  static uint32_t samples[16];
   static int i = 0;
-  static int total = 0;
+  static uint32_t total = 0;
 
   total += x - samples[i];
   samples[i] = x;
