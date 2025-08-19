@@ -50,8 +50,8 @@ struct LED{
 
 /* USER CODE BEGIN PV */
 volatile uint32_t adc_val = 0;
-// volatile uint32_t adc_val_avg_8 = 0;
-// volatile uint32_t adc_val_avg_16 = 0;
+ volatile uint32_t adc_val_avg_8 = 0;
+ volatile uint32_t adc_val_avg_16 = 0;
 struct LED LED_ARR[4] = { {GPIOE, GPIO_PIN_13},
                           {GPIOF, GPIO_PIN_15},
                           {GPIOG, GPIO_PIN_14},
@@ -121,8 +121,8 @@ int main(void)
     while (HAL_ADC_PollForConversion(&hadc1, 100) != HAL_OK) {}
     adc_val = HAL_ADC_GetValue(&hadc1);
     analogToLEDs(adc_val);
-    // adc_val_avg_8 = average_8(adc_val);
-    // adc_val_avg_16 = average_16(adc_val);
+     adc_val_avg_8 = average_8(adc_val);
+     adc_val_avg_16 = average_16(adc_val);
 
     transmitUARTStr("ADC1_CH10 ");
 
@@ -135,7 +135,7 @@ int main(void)
     sprintf(buf, "%.2f", v_in);
     transmitUARTStr(" Vin = ");
     transmitUARTStr(buf);
-    transmitUARTStr("\r\n");
+    transmitUARTStr(" V\r\n");
     HAL_Delay(400);
   }
   /* USER CODE END 3 */
