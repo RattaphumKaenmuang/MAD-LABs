@@ -130,9 +130,9 @@ int main(void)
 
     char buf[20];
     float v_in = adc_val/4095.0 * 3.3;
-    int int_part = (int)v_in;
-    int dec_part = (int)((v_in - int_part) * 100);
-    sprintf(buf, "%d.%02d", int_part, dec_part);
+//    int int_part = (int)v_in;
+//    int dec_part = (int)((v_in - int_part) * 100);
+    sprintf(buf, "%.2f", v_in);
     transmitUARTStr(" Vin = ");
     transmitUARTStr(buf);
     transmitUARTStr("\r\n");
