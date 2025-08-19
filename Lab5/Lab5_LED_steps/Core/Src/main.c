@@ -244,6 +244,7 @@ void analogToLEDs(uint32_t analog){
   int i = 0;
   while (i < 4){
     struct LED led = LED_ARR[i];
+    
     int state = (i < level) ? GPIO_PIN_SET : GPIO_PIN_RESET;
     HAL_GPIO_WritePin(led.port, led.pin, state);
     i++;
