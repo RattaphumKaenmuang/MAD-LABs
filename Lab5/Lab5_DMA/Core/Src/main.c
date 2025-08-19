@@ -20,11 +20,13 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint32_t buf[8];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,17 +96,26 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC1_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  HAL_UART_Transmit(&huart3, (uint8_t*)"kuy", 3, 300);
+  HAL_ADC_Start_DMA(&hadc1, buf, 8);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    char msg[100];
+    sprintf(msg, "%lu %lu %lu %lu %lu %lu %lu %lu\r\n", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7]);
+    // while (__HAL_UART_GET_FLAG(&huart3, UART_FLAG_TC) == RESET){}
+    HAL_UART_Transmit(&huart3, (uint8_t*)msg, strlen(msg), 300);
+
   }
   /* USER CODE END 3 */
 }
@@ -151,7 +162,13 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc){
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_SET);
+}
 
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+}
 /* USER CODE END 4 */
 
  /* MPU Configuration */
