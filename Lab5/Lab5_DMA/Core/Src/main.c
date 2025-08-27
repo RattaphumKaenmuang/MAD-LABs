@@ -110,10 +110,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	char buf[100];
-	sprintf(buf, "%lu %lu %lu %lu %lu %lu %lu %lu\r\n", adc_val[0], adc_val[1], adc_val[2], adc_val[3], adc_val[4], adc_val[5], adc_val[6], adc_val[7]);
-	HAL_UART_Transmit(&huart3, (uint8_t*)buf, strlen(buf), 200);
-	HAL_Delay(delayTime);
   }
   /* USER CODE END 3 */
 }
@@ -167,6 +163,9 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc){
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_7, GPIO_PIN_RESET);
+	char buf[100];
+	sprintf(buf, "0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x\r\n", adc_val[0], adc_val[1], adc_val[2], adc_val[3], adc_val[4], adc_val[5], adc_val[6], adc_val[7]);
+	HAL_UART_Transmit(&huart3, (uint8_t*)buf, strlen(buf), 200);
 	HAL_Delay(delayTime);
 }
 /* USER CODE END 4 */
