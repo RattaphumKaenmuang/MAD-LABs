@@ -52,7 +52,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-void displayNumber(uint32_t n);
+void displayNumber(uint32_t m, uint32_t s);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
