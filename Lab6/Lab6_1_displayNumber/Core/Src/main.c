@@ -24,6 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <string.h>
 
 /* USER CODE END Includes */
 
@@ -45,13 +47,13 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint32_t count = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void displayNumber(uint32_t n);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -96,11 +98,14 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_TIM_Base_Start_IT(&htim1);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	displayNumber(count);
+	HAL_Delay(400);
   }
   /* USER CODE END 3 */
 }
@@ -160,7 +165,12 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void displayNumber(uint32_t n){
+	char str_n[12];
+	sprintf(str_n, "%lu\r\n", n);
+	while (!__HAL_UART_GET_FLAG(&huart3, UART_FLAG_TC)){}
+	HAL_UART_Transmit(&huart3, (uint8_t*)str_n, strlen(str_n), 100);
+}
 /* USER CODE END 4 */
 
 /**

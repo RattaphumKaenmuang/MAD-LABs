@@ -57,7 +57,7 @@
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim1;
 /* USER CODE BEGIN EV */
-
+extern uint32_t count;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -183,11 +183,10 @@ void PendSV_Handler(void)
 void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
-
+  count++;
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-
   /* USER CODE END SysTick_IRQn 1 */
 }
 
