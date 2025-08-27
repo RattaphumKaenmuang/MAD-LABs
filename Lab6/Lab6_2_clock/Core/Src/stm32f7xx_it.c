@@ -41,7 +41,10 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+int canCount = 0;
+uint32_t count = 0;
+uint32_t m = 0;
+uint32_t s = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,8 +61,7 @@
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
 /* USER CODE BEGIN EV */
-extern uint32_t m;
-extern uint32_t s;
+extern void displayNumber(uint32_t m, uint32_t s);
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -206,7 +208,14 @@ void SysTick_Handler(void)
 void TIM1_UP_TIM10_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 0 */
-
+  if (canCount) {
+	  s++;
+	  if (s == 60) {
+		s = 0;
+		m++;
+	  }
+	  canCount = 0;
+  }
   /* USER CODE END TIM1_UP_TIM10_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
@@ -220,7 +229,12 @@ void TIM1_UP_TIM10_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
-
+  if (count > 1000){
+	  count %= 1000;
+	  canCount = 1;
+  }
+  count += 400;
+  displayNumber(m, s);
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */

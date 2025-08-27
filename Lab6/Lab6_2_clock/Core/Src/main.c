@@ -47,8 +47,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint32_t m = 0;
-uint32_t s = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -168,7 +166,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void displayNumber(uint32_t m, uint32_t s){
 	char str_n[12];
-	sprintf(str_n, "%lu:%lu\r", m, s);
+	sprintf(str_n, "%2lu:%2lu\r", m, s);
 	while (!__HAL_UART_GET_FLAG(&huart3, UART_FLAG_TC)){}
 	HAL_UART_Transmit(&huart3, (uint8_t*)str_n, strlen(str_n), 100);
 }
