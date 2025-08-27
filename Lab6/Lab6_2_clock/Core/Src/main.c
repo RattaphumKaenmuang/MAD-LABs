@@ -21,9 +21,10 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <string.h>
 
 /* USER CODE END Includes */
 
@@ -51,7 +52,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void displayNumber(uint32_t n);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -97,6 +98,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_TIM_Base_Start_IT(&htim1);
+  HAL_TIM_Base_Start_IT(&htim2);
   while (1)
   {
     /* USER CODE END WHILE */
@@ -161,7 +164,12 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void displayNumber(uint32_t m, uint32_t s){
+	char str_n[12];
+	sprintf(str_n, "%lu:%lu\r", m, s);
+	while (!__HAL_UART_GET_FLAG(&huart3, UART_FLAG_TC)){}
+	HAL_UART_Transmit(&huart3, (uint8_t*)str_n, strlen(str_n), 100);
+}
 /* USER CODE END 4 */
 
 /**
