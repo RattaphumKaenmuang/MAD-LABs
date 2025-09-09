@@ -124,15 +124,15 @@ int main(void)
 	      char resp[30];
 	      if (op == 'r') {
 	          duty_percentage_r = (duty_percentage_r + 20) % 120;
-	          sprintf(resp, "Red Duty Cycle: %d%\%\r\n", duty_percentage_r);
+	          sprintf(resp, "Red Duty Cycle: %d%%\r\n", duty_percentage_r);
 	          HAL_UART_Transmit(&huart3, (uint8_t*)resp, strlen(resp), 100);
 	      } else if (op == 'g') {
 	          duty_percentage_g = (duty_percentage_g + 20) % 120;
-	          sprintf(resp, "Green Duty Cycle: %d%\%\r\n", duty_percentage_g);
+	          sprintf(resp, "Green Duty Cycle: %d%%\r\n", duty_percentage_g);
 	          HAL_UART_Transmit(&huart3, (uint8_t*)resp, strlen(resp), 100);
 	      } else if (op == 'b') {
 	          duty_percentage_b = (duty_percentage_b + 20) % 120;
-	          sprintf(resp, "Blue Duty Cycle: %d%\%\r\n", duty_percentage_b);
+	          sprintf(resp, "Blue Duty Cycle: %d%%\r\n", duty_percentage_b);
 	          HAL_UART_Transmit(&huart3, (uint8_t*)resp, strlen(resp), 100);
 	      }
 	  }
