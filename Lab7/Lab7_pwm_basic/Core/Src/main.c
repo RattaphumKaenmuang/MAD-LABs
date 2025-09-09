@@ -44,7 +44,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t pwm;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -103,6 +103,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+	  HAL_Delay(100);
+	  HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
+	  pwm = (GPIOB->IDR & GPIO_PIN_10) >> 10;
   }
   /* USER CODE END 3 */
 }
