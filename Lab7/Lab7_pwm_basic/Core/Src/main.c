@@ -98,11 +98,13 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  float dutyCycle = 0.75;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  htim2.Instance -> CCR3 = (10000-1) * dutyCycle;
 	  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
 	  HAL_Delay(100);
 	  HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
