@@ -24,6 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <string.h>
 
 /* USER CODE END Includes */
 
@@ -57,7 +59,12 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int pwm_r;
+int pwm_g;
+int pwm_b;
 
+int pwm_r_shifted;
+int pwm_g_shifted;
 /* USER CODE END 0 */
 
 /**
@@ -100,11 +107,52 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int duty_percentage_r = 0;
+  int duty_percentage_g = 0;
+  int duty_percentage_b = 0;
+
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_4);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  char op;
+	  if (HAL_UART_Receive(&huart3, (uint8_t*)&op, 1, 100) == HAL_OK) {
+	      char resp[30];
+	      if (op == 'r') {
+	          duty_percentage_r = (duty_percentage_r + 20) % 120;
+	          sprintf(resp, "Red Duty Cycle: %d%\%\r\n", duty_percentage_r);
+	          HAL_UART_Transmit(&huart3, (uint8_t*)resp, strlen(resp), 100);
+	      } else if (op == 'g') {
+	          duty_percentage_g = (duty_percentage_g + 20) % 120;
+	          sprintf(resp, "Green Duty Cycle: %d%\%\r\n", duty_percentage_g);
+	          HAL_UART_Transmit(&huart3, (uint8_t*)resp, strlen(resp), 100);
+	      } else if (op == 'b') {
+	          duty_percentage_b = (duty_percentage_b + 20) % 120;
+	          sprintf(resp, "Blue Duty Cycle: %d%\%\r\n", duty_percentage_b);
+	          HAL_UART_Transmit(&huart3, (uint8_t*)resp, strlen(resp), 100);
+	      }
+	  }
+
+	  htim2.Instance -> CCR1 = (10000-1) * duty_percentage_r/100.0;
+	  htim2.Instance -> CCR3 = (10000-1) * duty_percentage_g/100.0;
+	  htim2.Instance -> CCR4 = (10000-1) * duty_percentage_b/100.0;
+
+	  HAL_Delay(100);
+
+//	  HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_1);
+//	  HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_3);
+//	  HAL_TIM_PWM_Stop(&htim2, TIM_CHANNEL_4);
+
+	  pwm_r = (GPIOA->IDR & GPIO_PIN_5) >> 5;
+	  pwm_g = (GPIOB->IDR & GPIO_PIN_10) >> 10;
+	  pwm_b = (GPIOB->IDR & GPIO_PIN_11) >> 11;
+
+	  pwm_r_shifted = pwm_r + 4;
+	  pwm_g_shifted = pwm_g + 2;
   }
   /* USER CODE END 3 */
 }
