@@ -45,26 +45,26 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, T_CLK_PI_Pin|T_DIN_PIN_Pin|T_CS_PIN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, T_CLK_Pin|T_MOSI_Pin|T_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, CS_PIN_Pin|DC_PIN_Pin|RESET_PIN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, CS_Pin|DC_Pin|RST_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : T_IRQ_PIN_Pin T_DO_PIN_Pin */
-  GPIO_InitStruct.Pin = T_IRQ_PIN_Pin|T_DO_PIN_Pin;
+  /*Configure GPIO pins : T_IRQ_Pin T_MISO_Pin */
+  GPIO_InitStruct.Pin = T_IRQ_Pin|T_MISO_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : T_CLK_PI_Pin T_DIN_PIN_Pin T_CS_PIN_Pin */
-  GPIO_InitStruct.Pin = T_CLK_PI_Pin|T_DIN_PIN_Pin|T_CS_PIN_Pin;
+  /*Configure GPIO pins : T_CLK_Pin T_MOSI_Pin T_CS_Pin */
+  GPIO_InitStruct.Pin = T_CLK_Pin|T_MOSI_Pin|T_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : CS_PIN_Pin DC_PIN_Pin RESET_PIN_Pin */
-  GPIO_InitStruct.Pin = CS_PIN_Pin|DC_PIN_Pin|RESET_PIN_Pin;
+  /*Configure GPIO pins : CS_Pin DC_Pin RST_Pin */
+  GPIO_InitStruct.Pin = CS_Pin|DC_Pin|RST_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

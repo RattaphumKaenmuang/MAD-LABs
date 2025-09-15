@@ -85,7 +85,7 @@
 #define ILI9341_STM32_DRIVER_H
 
 #include "stm32f7xx_hal.h"
-
+#include "main.h"
 
 #define ILI9341_SCREEN_HEIGHT 240 
 #define ILI9341_SCREEN_WIDTH 	320

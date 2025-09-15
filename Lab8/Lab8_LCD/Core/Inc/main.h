@@ -57,28 +57,28 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define T_IRQ_PIN_Pin GPIO_PIN_2
-#define T_IRQ_PIN_GPIO_Port GPIOE
-#define T_CLK_PI_Pin GPIO_PIN_3
-#define T_CLK_PI_GPIO_Port GPIOE
-#define T_DO_PIN_Pin GPIO_PIN_4
-#define T_DO_PIN_GPIO_Port GPIOE
-#define T_DIN_PIN_Pin GPIO_PIN_5
-#define T_DIN_PIN_GPIO_Port GPIOE
-#define T_CS_PIN_Pin GPIO_PIN_6
-#define T_CS_PIN_GPIO_Port GPIOE
+#define T_IRQ_Pin GPIO_PIN_2
+#define T_IRQ_GPIO_Port GPIOE
+#define T_CLK_Pin GPIO_PIN_3
+#define T_CLK_GPIO_Port GPIOE
+#define T_MISO_Pin GPIO_PIN_4
+#define T_MISO_GPIO_Port GPIOE
+#define T_MOSI_Pin GPIO_PIN_5
+#define T_MOSI_GPIO_Port GPIOE
+#define T_CS_Pin GPIO_PIN_6
+#define T_CS_GPIO_Port GPIOE
 #define SPI5_SCK_Pin GPIO_PIN_7
 #define SPI5_SCK_GPIO_Port GPIOF
 #define SPI5_MISO_Pin GPIO_PIN_8
 #define SPI5_MISO_GPIO_Port GPIOF
 #define SPI5_MOSI_Pin GPIO_PIN_9
 #define SPI5_MOSI_GPIO_Port GPIOF
-#define CS_PIN_Pin GPIO_PIN_8
-#define CS_PIN_GPIO_Port GPIOC
-#define DC_PIN_Pin GPIO_PIN_9
-#define DC_PIN_GPIO_Port GPIOC
-#define RESET_PIN_Pin GPIO_PIN_10
-#define RESET_PIN_GPIO_Port GPIOC
+#define CS_Pin GPIO_PIN_8
+#define CS_GPIO_Port GPIOC
+#define DC_Pin GPIO_PIN_9
+#define DC_GPIO_Port GPIOC
+#define RST_Pin GPIO_PIN_10
+#define RST_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 
