@@ -2,7 +2,12 @@
 CAD.formats=
 CAD.pinconfig=
 CAD.provider=
-CORTEX_M7.IPParameters=default_mode_Activation
+CORTEX_M7.ART_ACCELERATOR_ENABLE=1
+CORTEX_M7.CPU_DCache=Enabled
+CORTEX_M7.CPU_ICache=Enabled
+CORTEX_M7.IPParameters=default_mode_Activation,ART_ACCELERATOR_ENABLE,MPU_Control,PREFETCH_ENABLE,CPU_ICache,CPU_DCache
+CORTEX_M7.MPU_Control=__NULL
+CORTEX_M7.PREFETCH_ENABLE=1
 CORTEX_M7.default_mode_Activation=1
 File.Version=6
 GPIO.groupedBy=Group By Peripherals

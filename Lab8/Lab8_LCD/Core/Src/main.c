@@ -29,6 +29,8 @@
 #include <ILI9341_GFX.h>
 #include <ILI9341_STM32_Driver.h>
 #include <ILI9341_Touchscreen.h>
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -38,7 +40,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define MARGIN_X 50
+#define MARGIN_Y 30
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,14 +52,32 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+const uint16_t TEXT_SIZE = 2;
+const uint16_t BG_COLOR = WHITE;
+const uint16_t TEXT_COLOR = BLACK;
+
+extern volatile uint16_t LCD_HEIGHT;
+extern volatile uint16_t LCD_WIDTH;
+
+const uint16_t TOP_CIRCLE_RADIUS = 20;
+uint16_t topCircleX;
+uint16_t topCircleY;
+
+uint16_t redCircleX;
+uint16_t redCircleY;
+uint16_t greenCircleX;
+uint16_t greenCircleY;
+uint16_t blueCircleX;
+uint16_t blueCircleY;
+
+const uint16_t RGB_CIRCLE_RADIUS = 15;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
-
+void drawTopBar(float tempPercentage, uint16_t circleColor, float humidityPercentage);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -75,8 +96,13 @@ int main(void)
 
   /* USER CODE END 1 */
 
-  /* MPU Configuration--------------------------------------------------------*/
-  MPU_Config();
+  /* Enable the CPU Cache */
+
+  /* Enable I-Cache---------------------------------------------------------*/
+  SCB_EnableICache();
+
+  /* Enable D-Cache---------------------------------------------------------*/
+  SCB_EnableDCache();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -105,13 +131,18 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  ILI9341_Fill_Screen(RED);
+  ILI9341_Set_Rotation(SCREEN_HORIZONTAL_2);
+  ILI9341_Fill_Screen(WHITE);
+  topCircleX = LCD_WIDTH/2;
+  topCircleY = MARGIN_Y + CHAR_HEIGHT * TEXT_SIZE/2;
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  ILI9341_Draw_Filled_Circle(0, 0, 30, GREEN);
+
+	  drawTopBar(32.6, 0x6969, 54.1);
+	  drawRGBBar(10, 20, 30);
   }
   /* USER CODE END 3 */
 }
@@ -171,37 +202,86 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void drawTopBar(float tempPercentage, uint16_t circleColor, float humidityPercentage){
+    char tempText[10];
+    sprintf(tempText, "%.1fC", tempPercentage);
 
-/* USER CODE END 4 */
+    char humidText[10];
+    sprintf(humidText, "%.1f%%RH", humidityPercentage);
 
- /* MPU Configuration */
+    int tempWidth = strlen(tempText) * CHAR_WIDTH * TEXT_SIZE;
+    int tempX = MARGIN_X;
+    int tempY = MARGIN_Y;
 
-void MPU_Config(void)
-{
-  MPU_Region_InitTypeDef MPU_InitStruct = {0};
+    ILI9341_Draw_Text(tempText, tempX, tempY, TEXT_COLOR, TEXT_SIZE, BG_COLOR);
 
-  /* Disables the MPU */
-  HAL_MPU_Disable();
+    int margin = 15;
+    topCircleX = tempX + tempWidth + TOP_CIRCLE_RADIUS + margin;
 
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-  MPU_InitStruct.BaseAddress = 0x0;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
-  MPU_InitStruct.SubRegionDisable = 0x87;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
+    ILI9341_Draw_Filled_Circle(topCircleX, topCircleY, TOP_CIRCLE_RADIUS, circleColor);
 
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-  /* Enables the MPU */
-  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
+    int humidX = topCircleX + TOP_CIRCLE_RADIUS + margin;
+    int humidY = MARGIN_Y;
 
+    ILI9341_Draw_Text(humidText, humidX, humidY, TEXT_COLOR, TEXT_SIZE, BG_COLOR);
 }
+
+void drawRGBBar(int redPercentage, int greenPercentage, int bluePercentage){
+	char redPercentageText[10];
+	char greenPercentageText[10];
+	char bluePercentageText[10];
+
+	sprintf(redPercentageText, "%d%%", redPercentage);
+	sprintf(greenPercentageText, "%d%%", greenPercentage);
+	sprintf(bluePercentageText, "%d%%", bluePercentage);
+
+	const int TOP_MARGIN = 30;
+	const int START_Y = topCircleY + TOP_CIRCLE_RADIUS + TOP_MARGIN;
+	const int PADDING_X = 10;
+	const int PADDING_Y = 20;
+	const int BAR_WIDTH = 150;
+	const int BAR_HEIGHT = 30;
+	const int Y_DIFF = PADDING_Y + BAR_HEIGHT;
+	const int BAR_WIDTH_STEP = BAR_WIDTH / 10;
+
+	const uint16_t RED_BACK = (31 << 11) | (31 << 5) | 15;
+	const uint16_t GREEN_BACK = (15 << 11) | (63 << 5) | 15;
+	const uint16_t BLUE_BACK = (15 << 11) | (31 << 5) | 31;
+
+	redCircleX = MARGIN_X;
+	redCircleY = START_Y + RGB_CIRCLE_RADIUS;
+
+	int redBarStartX = redCircleX + RGB_CIRCLE_RADIUS + PADDING_X;
+	int redBarStartY = START_Y;
+	int redFrontWidth = redPercentage/10 * BAR_WIDTH_STEP;
+
+	greenCircleX = MARGIN_X;
+	greenCircleY = redCircleY + Y_DIFF;
+
+	int greenBarStartX = greenCircleX + RGB_CIRCLE_RADIUS + PADDING_X;
+	int greenBarStartY = redBarStartY + Y_DIFF;
+	int greenFrontWidth = greenPercentage/10 * BAR_WIDTH_STEP;
+
+	blueCircleX = MARGIN_X;
+	blueCircleY = greenCircleY + Y_DIFF;
+
+	int blueBarStartX = blueCircleX + RGB_CIRCLE_RADIUS + PADDING_X;
+	int blueBarStartY = greenBarStartY + Y_DIFF;
+	int blueFrontWidth = bluePercentage/10 * BAR_WIDTH_STEP;
+
+	ILI9341_Draw_Filled_Circle(redCircleX, redCircleY, RGB_CIRCLE_RADIUS, RED);
+	ILI9341_Draw_Filled_Rectangle_Coord(redBarStartX, redBarStartY, redBarStartX + BAR_WIDTH, redBarStartY + BAR_HEIGHT, RED_BACK);
+	ILI9341_Draw_Filled_Rectangle_Coord(redBarStartX, redBarStartY, redBarStartX + redFrontWidth, redBarStartY + BAR_HEIGHT, RED);
+
+	ILI9341_Draw_Filled_Circle(greenCircleX, greenCircleY, RGB_CIRCLE_RADIUS, GREEN);
+	ILI9341_Draw_Filled_Rectangle_Coord(greenBarStartX, greenBarStartY, greenBarStartX + BAR_WIDTH, greenBarStartY + BAR_HEIGHT, GREEN_BACK);
+	ILI9341_Draw_Filled_Rectangle_Coord(greenBarStartX, greenBarStartY, greenBarStartX + greenFrontWidth, greenBarStartY + BAR_HEIGHT, GREEN);
+
+	ILI9341_Draw_Filled_Circle(blueCircleX, blueCircleY, RGB_CIRCLE_RADIUS, BLUE);
+	ILI9341_Draw_Filled_Rectangle_Coord(blueBarStartX, blueBarStartY, blueBarStartX + BAR_WIDTH, blueBarStartY + BAR_HEIGHT, BLUE_BACK);
+	ILI9341_Draw_Filled_Rectangle_Coord(blueBarStartX, blueBarStartY, blueBarStartX + blueFrontWidth, blueBarStartY + BAR_HEIGHT, BLUE);
+}
+/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.
